@@ -5,7 +5,7 @@ available = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
       <contact:check
         xmlns:contact="urn:ietf:params:xml:ns:contact-1.0">
         <contact:id>%(handle)s</contact:id>
-      </contact:check> 
+      </contact:check>
      </check>
     <clTRID>ABC-12345</clTRID>
   </command>
@@ -28,7 +28,7 @@ create = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <contact:pc>%(pc)s</contact:pc>
             <contact:cc>%(cc)s</contact:cc>
           </contact:addr>
-        </contact:postalInfo>      
+        </contact:postalInfo>
         <contact:voice>%(voice)s</contact:voice>
         <contact:fax>%(fax)s</contact:fax>
         <contact:email>%(email)s</contact:email>
@@ -85,7 +85,7 @@ update = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <contact:voice>%(voice)s</contact:voice>
           <contact:fax>%(fax)s</contact:fax>
           <contact:email>%(email)s</contact:email>
-        </contact:chg>   
+        </contact:chg>
       </contact:update>
     </update>
     <clTRID>ABC-12345</clTRID>

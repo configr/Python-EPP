@@ -13,7 +13,7 @@ create = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
   <command>
     <create>
-      <domain:create 
+      <domain:create
       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
         <domain:name>%(domain)s</domain:name>
         <domain:ns>
@@ -35,7 +35,7 @@ canceldelete = """<?xml version="1.0" encoding="UTF-8"?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
     <extension>
         <sidn-ext-epp:command
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns:sidn-ext-epp="http://rxsd.domain-registry.nl/sidn-ext-epp-1.0">
             <sidn-ext-epp:domainCancelDelete>
                 <sidn-ext-epp:name>%s</sidn-ext-epp:name>
