@@ -231,7 +231,8 @@ class Domain(EPPObject):
             'admin': contacts['admin'],
             'tech': contacts['tech'],
         })
-        res = self.epp.cmd(cmd)
+
+        return self.epp.cmd(cmd)
 
     def delete(self, undo=False):
         if undo:
