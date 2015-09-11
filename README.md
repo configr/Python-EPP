@@ -8,7 +8,7 @@ EPP client written in Python. Development is still in an early phase, but most o
 Usage
 -----
 
-    from EPP import EPP, Contact, Domain, Nameserver
+    from epp import EPP, Contact, Domain, Nameserver
 
     config = {
         'host': '%s.domain-registry.nl' % ('testdrs' if args['test'] else 'drs'),
