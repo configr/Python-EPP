@@ -17,7 +17,8 @@ class EPP:
         self.socket.connect((self.config['host'], self.config['port']))
 
         try:
-            self.ssl = ssl.wrap_socket(self.socket)
+            self.ssl = ssl.wrap_socket(self.socket,
+                                       certfile=self.config.get('certfile'))
         except socket.error:
             print "ERROR: Could not setup a secure connection."
             print "Check whether your IP is allowed to connect to the host."

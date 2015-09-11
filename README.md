@@ -15,6 +15,7 @@ Usage
         'port': 700,
         'user': <user>,
         'pass': <pass>,
+        'cert': <path/to/certificate/file.pem>,  # Optional parameter
     }
     contacts = {
         'registrant': 'NEX001077-NEXTG',
