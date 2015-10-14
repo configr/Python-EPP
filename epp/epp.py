@@ -79,8 +79,6 @@ class EPP:
         response = soup.find('response')
         result = soup.find('result')
 
-        import ipdb; ipdb.set_trace()
-
         try:
             code = int(result.get('code'))
         except AttributeError:
