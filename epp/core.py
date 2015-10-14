@@ -20,9 +20,11 @@ class EPP:
             self.ssl = ssl.wrap_socket(self.socket,
                                        certfile=self.config.get('cert'))
         except socket.error:
-            print "ERROR: Could not setup a secure connection."
-            print "Check whether your IP is allowed to connect to the host."
-            exit(1)
+            raise socket.error(
+                'ERROR: Could not setup a secure connection. \n'
+                'Check whether your IP is allowed to connect to the host, '
+                'or if you have a valid certificate.'
+            )
 
         self.format_32 = self.format_32()
         self.login()
@@ -63,15 +65,19 @@ class EPP:
 
     def cmd(self, cmd, silent=False):
         self.write(cmd)
-        soup = BeautifulStoneSoup(self.read())
+
+        raw_response = self.read()
+        if not raw_response:
+            raise Exception('ERROR: Empty response')
+
+        soup = BeautifulStoneSoup(raw_response)
         response = soup.find('response')
         result = soup.find('result')
 
         try:
             code = int(result.get('code'))
         except AttributeError:
-            print "\nERROR: Could not get result code, exiting."
-            exit(1)
+            raise AttributeError("ERROR: Could not get result code.")
 
         if not silent or code not in (1000, 1300, 1500):
             print("- [%d] %s" % (code, result.msg.text))
@@ -86,7 +92,7 @@ class EPP:
         length = self.ssl.read(4)
 
         if length:
-            i = self.int_from_net(length)-4
+            i = self.int_from_net(length) - 4
 
             return self.ssl.read(i)
 
@@ -112,7 +118,7 @@ class EPP:
         xml = commands.login % self.config
 
         if not self.cmd(xml, silent=True):
-            exit(1)
+            raise Exception('Error: Unable to login')
 
     def logout(self):
         cmd = commands.logout
@@ -207,6 +213,7 @@ class Domain(EPPObject):
         self.epp = epp
         self.roid = ""
         self.status = ""
+        ssl.wrap_socket
         # self.ns = Nameserver(epp)
 
     def __unicode__(self):
@@ -215,14 +222,17 @@ class Domain(EPPObject):
                 "tech: %(tech)s") % self
 
     def available(self):
+        """Checks for domain availability"""
+
         cmd = commands.available % self.domain
         res = self.epp.cmd(cmd)
 
-        if not res:
-            # exception would be more fitting
-            return False
+        # https://tools.ietf.org/html/rfc5731#section-3.1.1
+        # "1" or "true" means that the object can be provisioned.
+        # "0" or "false" means that the object can not be provisioned.
+        avail = res.resdata.find('domain:name').get('avail')
 
-        return res.resdata.find('domain:name').get('avail') == 'true'
+        return avail == 'true' or avail == '1'
 
     def create(self, contacts, ns):
         cmd = commands.create % dict({
