@@ -23,7 +23,7 @@ class Contact(EPPObject):
 
     def available(self):
         cmd = commands.contact.available % self
-        res = self.epp.cmd(cmd, silent=True)
+        res = self.epp.cmd(cmd)
 
         return res.resdata.find('contact:id').get('avail') == 'true'
 

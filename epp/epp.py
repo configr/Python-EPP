@@ -7,13 +7,16 @@ import struct
 from BeautifulSoup import BeautifulStoneSoup
 
 from . import commands
+from .exceptions import CommandException
 
 
 class EPP:
 
-    def __init__(self, **kwargs):
+    def __init__(self, silent=True, **kwargs):
+        self.silent = silent
         self.config = kwargs
         self.connected = False
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.settimeout(2)
         self.socket.connect((self.config['host'], self.config['port']))
@@ -65,28 +68,29 @@ class EPP:
     def int_to_net(self, value):
         return struct.pack(self.format_32, value)
 
-    def cmd(self, cmd, silent=False):
+    def cmd(self, cmd):
         self.write(cmd)
 
         raw_response = self.read()
         if not raw_response:
-            raise Exception('ERROR: Empty response')
+            raise CommandException('Empty response')
 
         soup = BeautifulStoneSoup(raw_response)
         response = soup.find('response')
         result = soup.find('result')
 
+        import ipdb; ipdb.set_trace()
+
         try:
             code = int(result.get('code'))
         except AttributeError:
-            raise AttributeError("ERROR: Could not get result code.")
+            raise CommandException("Could not get result code")
 
-        if not silent or code not in (1000, 1300, 1500):
+        if not self.silent:
             print("- [%d] %s" % (code, result.msg.text))
-        if code == 2308:
-            return False
-        if code == 2502:
-            return False
+
+        if code not in (1000, 1300, 1500):
+            raise CommandException('[{0}] {1}'.format(code, result.msg.text))
 
         return response
 
@@ -119,13 +123,13 @@ class EPP:
         """ Login """
         xml = commands.login % self.config
 
-        if not self.cmd(xml, silent=True):
+        if not self.cmd(xml):
             raise Exception('Error: Unable to login')
 
     def logout(self):
         cmd = commands.logout
 
-        return self.cmd(cmd, silent=True)
+        return self.cmd(cmd)
 
     def poll(self):
         cmd = commands.poll
